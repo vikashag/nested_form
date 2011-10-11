@@ -20,7 +20,7 @@ module NestedForm
       args << options
       @fields ||= {}
       @template.after_nested_form(association) do
-        model_object = association.is_a? Class ? association.new : object.class.reflect_on_association(association).klass.new
+        model_object = options.delete(:model_class).try(:new) || object.class.reflect_on_association(association).klass.new
         output = %Q[<div id="#{association}_fields_blueprint" style="display: none">].html_safe
         output << fields_for(association, model_object, :child_index => "new_#{association}", &@fields[association])
         output.safe_concat('</div>')
